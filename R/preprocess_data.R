@@ -80,7 +80,12 @@ readsave_spatial_acsmapoverall <- function(geog, tidyyear = 2020, tidystate = "M
   }
 
   else {
-    stateabr <- state.abb[grep(tidystate, state.name)]
+    # stateabr <- state.abb[grep(tidystate, state.name)]
+
+    stateabr <- usa::states %>%
+      filter(name == tidystate) %>%
+      dplyr::pull(abb)
+
 
     geogpath <- glue::glue("{basedir}/{tidyyear}/{stateabr}/{geog}/processed")
 
@@ -381,7 +386,11 @@ processdfs_acsmapoverall <- function(geog, tidyyear = 2020, tidystate = "Marylan
 
   else{
 
-    stateabr <- state.abb[grep(tidystate, state.name)]
+    # stateabr <- state.abb[grep(tidystate, state.name)]
+
+    stateabr <- usa::states %>%
+      filter(name == tidystate) %>%
+      dplyr::pull(abb)
 
     acsmapping::quickdircreate(glue::glue("{basedir}/{tidyyear}/{stateabr}"))
 
