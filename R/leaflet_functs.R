@@ -9,6 +9,7 @@
 #' @param totcol total column/universe of column visualizing (e.g., tot_population, tot_households)
 #' @param colors Color scheme to shade polygons by
 #' @param title Title of layer/legend
+#' @param sizelabs Size of labels; default 11
 #'
 #' @return Leaflet object with polygons shaded/added
 #' @export
@@ -62,6 +63,7 @@ addpoly_acs <- function(leafletobj, colvisualize, labtext, acsdata = leaflet::ge
 #' @param leafletobj leaflet object adding polygons to
 #' @param colvisualize Column visualizing in polygons (e.g., Hispanic_estimate)
 #' @param acsdata spatial dataset column is in; default to pull data from map object
+#' @param sizelabs Size of labels; default 11
 #'
 #' @return Leaflet map with polygons added
 #' @export
@@ -113,7 +115,7 @@ quicklab <- function(colsuffix, tot = "estimate_Population"){
 #' @param baseacsdata Spatial dataframe for a Census geometry pre-processed by acsmapping::prepallinone_acsmapoverall() sequence of functions
 #' @param pct_est Percent or estimate prefix as string; default "pct_"
 #' @param inccountycontrols Whether to include overlay layers for county and place boundaries; default TRUE
-#' @param ... Additional arguments to leafletwrappers::layercontrolsquick.
+#' @param ... Additional arguments to leafletwrappers::layercontrolsquick and addpoly_acs() and addpoly_race() (e.g., sizelabs).
 #'
 #' @return A leaflet map with key ACS variables visualized
 #' @export
