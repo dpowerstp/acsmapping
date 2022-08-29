@@ -14,7 +14,7 @@
 #' @export
 #'
 #' @examples
-addpoly_acs <- function(leafletobj, colvisualize, labtext, acsdata = leaflet::getMapData(leafletobj), totcol = estimate_Population, colors = "Blues",  title = NULL){
+addpoly_acs <- function(leafletobj, colvisualize, labtext, acsdata = leaflet::getMapData(leafletobj), totcol = estimate_Population, colors = "Blues",  title = NULL, sizelabs = 11){
 
   # browser()
 
@@ -49,7 +49,8 @@ addpoly_acs <- function(leafletobj, colvisualize, labtext, acsdata = leaflet::ge
       group_select = grp,
       labels_select = labs,
       title_select = title,
-      .data = acsdata
+      .data = acsdata,
+      .label_textsize = sizelabs
     )
 
 }
@@ -66,7 +67,7 @@ addpoly_acs <- function(leafletobj, colvisualize, labtext, acsdata = leaflet::ge
 #' @export
 #'
 #' @examples
-addpoly_race <- function(leafletobj, colvisualize, acsdata = leaflet::getMapData(leafletobj)) {
+addpoly_race <- function(leafletobj, colvisualize, acsdata = leaflet::getMapData(leafletobj), sizelabs = 11) {
 
   # p <- "<p></p>"
 
@@ -83,7 +84,7 @@ addpoly_race <- function(leafletobj, colvisualize, acsdata = leaflet::getMapData
   labtext <- paste0("Name: {name.x}<p></p>Population: {estimate_Population %>% tpfuncts::commafy()}<p></p>Race total: {", est_col, " %>% tpfuncts::commafy()}<p></p>Percent race: {", pct_col, " %>% round(0)}%")
 
   leafletobj %>%
-    acsmapping::addpoly_acs(acsdata = acsdata, colvisualize = colvisualize, labtext = labtext, totcol = estimate_Population, colors = "Blues")
+    acsmapping::addpoly_acs(acsdata = acsdata, colvisualize = colvisualize, labtext = labtext, totcol = estimate_Population, colors = "Blues", sizelabs = sizelabs)
 
 }
 
@@ -153,39 +154,46 @@ gen_acsmap_overall <- function(baseacsdata, pct_est = "pct_", inccountycontrols 
     pct_col <- paste0(pct_est, "_", .x)
 
     leafobj <<- leafobj %>%
-      acsmapping::addpoly_race(pct_col)
+      acsmapping::addpoly_race(pct_col, ...)
   })
 
   leafobj <- leafobj %>%
     acsmapping::addpoly_acs(
       colvisualize = "estimate_Population",
-      labtext = "Name: {name.x}<p></p>Total population: {estimate_Population}") %>%
+      labtext = "Name: {name.x}<p></p>Total population: {estimate_Population}",
+      ...) %>%
     acsmapping::addpoly_acs(
       colvisualize = glue::glue("{pct_est}_Under.poverty.line"),
       labtext = acsmapping::quicklab("Under.poverty.line"),
-      colors = "Oranges") %>%
+      colors = "Oranges",
+      ...) %>%
     acsmapping::addpoly_acs(
       colvisualize = glue::glue("{pct_est}_Under.2X.poverty.line"),
       labtext = acsmapping::quicklab("Under.2X.poverty.line"),
-      colors = "Oranges") %>%
+      colors = "Oranges",
+      ...) %>%
     acsmapping::addpoly_acs(
       colvisualize = glue::glue("{pct_est}_Renter.occupied"),
       labtext = acsmapping::quicklab("Renter.occupied", tot = "tothous"),
       colors = "YlGn",
-      totcol = "tothous") %>%
+      totcol = "tothous",
+      ...) %>%
     acsmapping::addpoly_acs(
       colvisualize = glue::glue("{pct_est}_No.vehicle"),
       labtext = acsmapping::quicklab("No.vehicle", tot = "tothous"),
       colors = "PuRd",
-      totcol = "tothous") %>%
+      totcol = "tothous",
+      ...) %>%
     acsmapping::addpoly_acs(
       colvisualize = glue::glue("{pct_est}_Under.18"),
       labtext = acsmapping::quicklab("No.vehicle"),
-      colors = "PuRd") %>%
+      colors = "PuRd",
+      ...) %>%
     acsmapping::addpoly_acs(
       colvisualize = glue::glue("{pct_est}_65.and.over"),
       labtext = acsmapping::quicklab("65.and.over"),
-      colors = "PuRd")
+      colors = "PuRd",
+      ...)
 
   if (inccountycontrols){
     grps <- c(grps, "Place boundaries", "County boundaries")
