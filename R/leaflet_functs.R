@@ -69,7 +69,7 @@ addpoly_acs <- function(leafletobj, colvisualize, labtext, acsdata = leaflet::ge
 #' @export
 #'
 #' @examples
-addpoly_race <- function(leafletobj, colvisualize, acsdata = leaflet::getMapData(leafletobj), sizelabs = "11px") {
+addpoly_race <- function(leafletobj, colvisualize, acsdata = leaflet::getMapData(leafletobj), sizelabs = "12px") {
 
   # p <- "<p></p>"
 
@@ -115,13 +115,14 @@ quicklab <- function(colsuffix, tot = "estimate_Population"){
 #' @param baseacsdata Spatial dataframe for a Census geometry pre-processed by acsmapping::prepallinone_acsmapoverall() sequence of functions
 #' @param pct_est Percent or estimate prefix as string; default "pct_"
 #' @param inccountycontrols Whether to include overlay layers for county and place boundaries; default TRUE
-#' @param ... Additional arguments to leafletwrappers::layercontrolsquick and addpoly_acs() and addpoly_race() (e.g., sizelabs).
+#' @param ... Additional arguments to leafletwrappers::layercontrolsquick
+#' @param sizelabs Label text size; default "12px"
 #'
 #' @return A leaflet map with key ACS variables visualized
 #' @export
 #'
 #' @examples
-gen_acsmap_overall <- function(baseacsdata, pct_est = "pct_", inccountycontrols = T, ...){
+gen_acsmap_overall <- function(baseacsdata, pct_est = "pct_", inccountycontrols = T, sizelabs = "12px", ...){
 
   # groups to cycle through
   grps_race <- c(
@@ -156,46 +157,47 @@ gen_acsmap_overall <- function(baseacsdata, pct_est = "pct_", inccountycontrols 
     pct_col <- paste0(pct_est, "_", .x)
 
     leafobj <<- leafobj %>%
-      acsmapping::addpoly_race(pct_col, ...)
+      acsmapping::addpoly_race(pct_col,
+                               sizelabs = sizelabs)
   })
 
   leafobj <- leafobj %>%
     acsmapping::addpoly_acs(
       colvisualize = "estimate_Population",
       labtext = "Name: {name.x}<p></p>Total population: {estimate_Population}",
-      ...) %>%
+      sizelabs = sizelabs) %>%
     acsmapping::addpoly_acs(
       colvisualize = glue::glue("{pct_est}_Under.poverty.line"),
       labtext = acsmapping::quicklab("Under.poverty.line"),
       colors = "Oranges",
-      ...) %>%
+      sizelabs = sizelabs) %>%
     acsmapping::addpoly_acs(
       colvisualize = glue::glue("{pct_est}_Under.2X.poverty.line"),
       labtext = acsmapping::quicklab("Under.2X.poverty.line"),
       colors = "Oranges",
-      ...) %>%
+      sizelabs = sizelabs) %>%
     acsmapping::addpoly_acs(
       colvisualize = glue::glue("{pct_est}_Renter.occupied"),
       labtext = acsmapping::quicklab("Renter.occupied", tot = "tothous"),
       colors = "YlGn",
       totcol = "tothous",
-      ...) %>%
+      sizelabs = sizelabs) %>%
     acsmapping::addpoly_acs(
       colvisualize = glue::glue("{pct_est}_No.vehicle"),
       labtext = acsmapping::quicklab("No.vehicle", tot = "tothous"),
       colors = "PuRd",
       totcol = "tothous",
-      ...) %>%
+      sizelabs = sizelabs) %>%
     acsmapping::addpoly_acs(
       colvisualize = glue::glue("{pct_est}_Under.18"),
       labtext = acsmapping::quicklab("No.vehicle"),
       colors = "PuRd",
-      ...) %>%
+      sizelabs = sizelabs) %>%
     acsmapping::addpoly_acs(
       colvisualize = glue::glue("{pct_est}_65.and.over"),
       labtext = acsmapping::quicklab("65.and.over"),
       colors = "PuRd",
-      ...)
+      sizelabs = sizelabs)
 
   if (inccountycontrols){
     grps <- c(grps, "Place boundaries", "County boundaries")
