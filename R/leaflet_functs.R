@@ -9,13 +9,13 @@
 #' @param totcol total column/universe of column visualizing (e.g., tot_population, tot_households)
 #' @param colors Color scheme to shade polygons by
 #' @param title Title of layer/legend
-#' @param sizelabs Size of labels; default 11
+#' @param sizelabs Size of labels; default "11px"
 #'
 #' @return Leaflet object with polygons shaded/added
 #' @export
 #'
 #' @examples
-addpoly_acs <- function(leafletobj, colvisualize, labtext, acsdata = leaflet::getMapData(leafletobj), totcol = estimate_Population, colors = "Blues",  title = NULL, sizelabs = 11){
+addpoly_acs <- function(leafletobj, colvisualize, labtext, acsdata = leaflet::getMapData(leafletobj), totcol = estimate_Population, colors = "Blues",  title = NULL, sizelabs = "11px"){
 
   # browser()
 
@@ -69,7 +69,7 @@ addpoly_acs <- function(leafletobj, colvisualize, labtext, acsdata = leaflet::ge
 #' @export
 #'
 #' @examples
-addpoly_race <- function(leafletobj, colvisualize, acsdata = leaflet::getMapData(leafletobj), sizelabs = 11) {
+addpoly_race <- function(leafletobj, colvisualize, acsdata = leaflet::getMapData(leafletobj), sizelabs = "11px") {
 
   # p <- "<p></p>"
 
