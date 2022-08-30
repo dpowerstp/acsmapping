@@ -149,7 +149,7 @@ readsave_spatial_acsmapoverall <- function(geog, tidyyear = 2020, tidystate = "M
 #'
 #' Reads in, processes, and saves unprocessed tidycensus dataframes that make up the ACS Map Overall, for a given set of geographies. Specifically, processes set of dataframes saved by acsmapping::loadtidydata_acsmapoverall() at the same geography in sequence of steps enabling datasets to be visualized by acsmapping::gen_acsmap_overall().
 #'
-#' @param geogs Tidycensus geographies, as a string vector. Default c("block group", "tract", "place", "county")
+#' @param geogs Tidycensus geographies, as a string vector. Default c("block group", "tract", "place", "county subdivision", "county")
 #' @param tidyyear Last year of 5-year ACS data; default 2020 (for 2016-2020 data)
 #' @param tidystate State to download data for; default "Maryland"
 #' @param basedir The base-directory to data and geometry files are in; default "./data/"
@@ -158,7 +158,7 @@ readsave_spatial_acsmapoverall <- function(geog, tidyyear = 2020, tidystate = "M
 #' @export
 #'
 #' @examples
-readprocessdata_acsmapoverall <- function(geogs = c("block group", "tract", "place", "county"), tidyyear = 2020, tidystate = "Maryland", basedir = "./data"){
+readprocessdata_acsmapoverall <- function(geogs = c("block group", "tract", "place", "county subdivision", "county"), tidyyear = 2020, tidystate = "Maryland", basedir = "./data"){
 
   # at different geometries - read in/save
   purrr::walk(geogs, ~ acsmapping::processdfs_acsmapoverall(.x, tidyyear = tidyyear, tidystate = tidystate, basedir = basedir))
@@ -173,7 +173,7 @@ readprocessdata_acsmapoverall <- function(geogs = c("block group", "tract", "pla
 #' Sequence of functions to prepare data for acsmapping::gen_acsmap_overall() is 1) acsmapping::loadtidydata_acsmapoverall() 2) acsmapping::readprocessdata_acsmapoverall() or acsmapping::processdfs_acsmapoverall() 3) acsmapping::readsave_spatial_acsmapoverall().
 #'
 #' @param tidyyear Last year of 5-year ACS data; default 2020 (for 2016-2020 data)
-#' @param geogs Set of geographies to read in and save data for; default c("block group", "tract", "place", "county")
+#' @param geogs Set of geographies to read in and save data for; default c("block group", "tract", "place", "county subdivision", "county")
 #' @param tidystate State to download data for; default "Maryland"
 #' @param downloadgeog Whether to download and save spatial geographies associated with data downloading; default F
 #' @param .geomyear If downloadgeog is TRUE, the year of the geometry file to download; default tidyyear
@@ -183,7 +183,7 @@ readprocessdata_acsmapoverall <- function(geogs = c("block group", "tract", "pla
 #' @export
 #'
 #' @examples
-loadtidydata_acsmapoverall <- function(geogs = c("block group", "tract", "place", "county"), tidyyear = 2020, tidystate = "Maryland", downloadgeog = F, basedir= "./data", .geomyear = tidyyear ){
+loadtidydata_acsmapoverall <- function(geogs = c("block group", "tract", "place", "county subdivision", "county"), tidyyear = 2020, tidystate = "Maryland", downloadgeog = F, basedir= "./data", .geomyear = tidyyear ){
 
   # load tidycensus variables
   varscensus <- tidycensus::load_variables(year = tidyyear, "acs5", cache = T)
@@ -273,7 +273,7 @@ loadtidydata_acsmapoverall <- function(geogs = c("block group", "tract", "place"
 #' Download shapefiles associated with geographies
 #'
 #' @param tidyyear Year of geography data to download; default 2020 (for 2016-2020 data)
-#' @param geogs Set of geographies to read in and save data for; default c("block group", "tract", "place", "county")
+#' @param geogs Set of geographies to read in and save data for; default c("block group", "tract", "place", "county", "county subdivision")
 #' @param tidystate State to download data for; default "Maryland"
 #' @param dirsave Directory to save geometries in
 #'
@@ -281,7 +281,7 @@ loadtidydata_acsmapoverall <- function(geogs = c("block group", "tract", "place"
 #' @export
 #'
 #' @examples
-downloadgeogs <- function(geogs = c("block group", "tract", "place", "county"), tidyyear = 2020, tidystate = "Maryland", dirsave = "./data"){
+downloadgeogs <- function(geogs = c("block group", "tract", "place", "county", "county subdivision"), tidyyear = 2020, tidystate = "Maryland", dirsave = "./data"){
 
   options(tigris_use_cache = T)
 
@@ -321,7 +321,8 @@ downloadgeogs <- function(geogs = c("block group", "tract", "place", "county"), 
       "tract" = tigris::tracts,
       "place" = tigris::places,
       "county" = tigris::counties,
-      "state" = tigris::states
+      "state" = tigris::states,
+      "county subdivision" = tigris::county_subdivisions,
     )
 
     if (is.null(tigrisfunct)){
@@ -473,7 +474,7 @@ processdfs_acsmapoverall <- function(geog, tidyyear = 2020, tidystate = "Marylan
 #' Reads in, saves, and processes all files needed to generate ACS map overall, following sequence of functions 1) acsmapping::loadtidydata_acsmapoverall() 2) acsmapping::readprocessdata_acsmapoverall() and 3) acsmapping::readsave_spatial_acsmapoverall().
 #'
 #' @param tidyyear Last year of 5-year ACS data; default 2020 (for 2016-2020 data)
-#' @param geogs Set of geographies to read in and save data for; default c("block group", "tract", "place", "county")
+#' @param geogs Set of geographies to read in and save data for; default c("block group", "tract", "county", "county subdivision", "place")
 #' @param tidystate State to download data for; default "Maryland"
 #' @param downloadgeog Whether to download and save spatial geographies associated with data downloading; default F
 #' @param .geomyear If downloadgeog is TRUE, the year of the geometry file to download; default tidyyear
@@ -483,7 +484,7 @@ processdfs_acsmapoverall <- function(geog, tidyyear = 2020, tidystate = "Marylan
 #' @export
 #'
 #' @examples
-prepallinone_acsmapoverall <- function(geogs = c("block group", "tract", "county", "place"), tidyyear = 2020, tidystate = "Maryland", basedir = "./data", downloadgeog = T, .geomyear = tidyyear){
+prepallinone_acsmapoverall <- function(geogs = c("block group", "tract", "county", "county subdivision", "place"), tidyyear = 2020, tidystate = "Maryland", basedir = "./data", downloadgeog = T, .geomyear = tidyyear){
 
   acsmapping::loadtidydata_acsmapoverall(
     geogs = geogs,
